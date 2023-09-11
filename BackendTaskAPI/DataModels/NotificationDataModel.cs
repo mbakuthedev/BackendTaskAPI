@@ -6,5 +6,7 @@
         public string NotificationMessage { get; set; }
         public string StatusUpdate { get; set; }
         public DateTime TimeStamp { get; set; }
+        public bool Read { get; set; }
+        public bool Unread { get; set; }
     }
 }

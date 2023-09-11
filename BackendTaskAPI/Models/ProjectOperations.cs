@@ -255,44 +255,6 @@ namespace BackendTaskAPI.Models
             return result;
         }
 
-        public async Task<OperationResult> FetchTasksByDueDate(DateTime dueDate)
-        {
-            //
-            OperationResult result;
-            try
-            {
-                var tasksByDate = await _context.Tasks.FirstOrDefaultAsync(x => x.DueDate.Date == dueDate.Date);
-                if (tasksByDate == null)
-                {
-                    result = new OperationResult
-                    {
-                        ErrorMessage = "task not found",
-                        StatusCode = (int)HttpStatusCode.NotFound
-                    };
-                }
-                else
-                {
-                    result = new OperationResult
-                    {
-                        Result = tasksByDate
-                    };
-                }
-            
-            }
-            catch (Exception ex)
-            {
-
-                // Log the error 
-                _logger.LogError("An error occurred. Details: {error}", ex.Message);
-
-                result = new OperationResult
-                {
-                    ErrorTitle = "SYSTEM ERROR",
-                    ErrorMessage = "Transaction could not be initiated",
-                    StatusCode = (int)HttpStatusCode.InternalServerError
-                };
-            }
-            return result;
-        }
+      
     }
 }

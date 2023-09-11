@@ -9,6 +9,7 @@ namespace BackendTaskAPI.DataModels
         public DateTime DueDate { get; set; }
         public Priority Priority { get; set; }
         public Status Status { get; set; }
+        public NotificationDataModel Notification { get; set; }
         public ProjectDataModel Project { get; set; }
     }
 }
