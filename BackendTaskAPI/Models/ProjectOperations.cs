@@ -66,13 +66,13 @@ namespace BackendTaskAPI.Models
             return result;
         }
 
-        public IEnumerable<ProjectDataModel> GetProjects()
+        public async Task<OperationResult> GetProjects()
         {
             // Initialize operation result
             OperationResult result;
             try
             {
-                var tasks = _context.Tasks.ToListAsync();
+                var tasks = await _context.Tasks.ToListAsync();
                 result = new OperationResult
                 {
                     Result = tasks
@@ -92,13 +92,13 @@ namespace BackendTaskAPI.Models
             }
             return result;
         }
-        public async Task<OperationResult> AddTaskToProject(TaskApiModel model, ProjectApiModel project)
+        public async Task<OperationResult> AddTaskToProject(string taskId, ProjectDataModel project)
         {
             // Initialize Operation Result
             OperationResult result;
             try
             {
-                var tasks = await _context.Tasks.FirstOrDefaultAsync(c => c.Id == model.Id);
+                var tasks = await _context.Tasks.FirstOrDefaultAsync(c => c.Id == taskId);
                 if (tasks == null )
                 {
                     result = new OperationResult
@@ -109,8 +109,12 @@ namespace BackendTaskAPI.Models
                 }
                 else
                 {
-                    project.Tasks = model;
+                    project.Tasks = ;
                      _context.Projects.Update(project);
+                    result = new OperationResult
+                    {
+                        Result = project
+                    };
                 }
             }
             catch (Exception ex)
@@ -155,13 +159,13 @@ namespace BackendTaskAPI.Models
             return result;
         }
 
-        public async Task<OperationResult> ModifyTasks(string id, TaskApiModel model)
+        public async Task<OperationResult> ModifyProject(string id, ProjectApiModel model)
         {
             OperationResult result;
             try
             {
-                var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
-                if (task == null)
+                var project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == id);
+                if (project == null)
                 {
                     result = new OperationResult
                     {
@@ -171,17 +175,15 @@ namespace BackendTaskAPI.Models
                 }
                 else
                 {
-                    model.Priority = task.Priority;
-                    model.Status = task.Status;
-                    model.Title = task.Title;
-                    model.DueDate = task.DueDate;
+                    model.ProjectDescription = project.ProjectDescription;
+                    model.ProjectName = project.ProjectName;
 
-                    _context.Tasks.Update(task);
+                    _context.Projects.Update(project);
 
                     await _context.SaveChangesAsync();
                     result = new OperationResult
                     {
-                        Result = task
+                        Result = project
                     };
                 }
             }
@@ -200,14 +202,14 @@ namespace BackendTaskAPI.Models
             }
             return result;
         }
-        public async Task<OperationResult> DeleteTasks(string id)
+        public async Task<OperationResult> DeleteProject(string id)
         {
             // Initialize operation result
             OperationResult result;
             try
             {
-                var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
-                if (task == null)
+                var project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == id);
+                if (project == null)
                 {
                     result = new OperationResult
                     {
@@ -217,7 +219,20 @@ namespace BackendTaskAPI.Models
                 }
                 else
                 {
-                    _context.Tasks.Remove(task);
+                    if (project.Tasks != null)
+                    {
+                        using (var context = new ApplicationDbContext())
+                        {
+                            var entity = context.Projects.Find(id);
+                            context.Projects.Remove(entity);
+                            context.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        _context.Projects.Remove(project);
+                       
+                    }
                     result = new OperationResult
                     {
                         Result = new { Message = "Removed Sucessfully" }
@@ -246,12 +261,23 @@ namespace BackendTaskAPI.Models
             OperationResult result;
             try
             {
-                var tasksByDate = _context.Tasks.FirstOrDefault(x => x.DueDate.Date == dueDate.Date);
-
-                result = new OperationResult
+                var tasksByDate = await _context.Tasks.FirstOrDefaultAsync(x => x.DueDate.Date == dueDate.Date);
+                if (tasksByDate == null)
                 {
-                    Result = tasksByDate
-                };
+                    result = new OperationResult
+                    {
+                        ErrorMessage = "task not found",
+                        StatusCode = (int)HttpStatusCode.NotFound
+                    };
+                }
+                else
+                {
+                    result = new OperationResult
+                    {
+                        Result = tasksByDate
+                    };
+                }
+            
             }
             catch (Exception ex)
             {
