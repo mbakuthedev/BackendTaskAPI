@@ -54,7 +54,53 @@ namespace BackendTaskAPI.Models
                 }
                 return result;
             }
+            public async Task<OperationResult> ModifyUser(string id, UserApiModel model)
+            {
+            // Initialize Operation result
+            OperationResult result;
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                if (user == null)
+                {
+                    result = new OperationResult
+                    {
+                        ErrorMessage = "User not found",
+                        StatusCode = (int)HttpStatusCode.NotFound
+                    };
+                }
+                else
+                {
+                    user.Email = model.Email;
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
 
+                    // update user
+                    _context.Users.Update(user);
+
+                    // save changes
+                    await _context.SaveChangesAsync();
+
+                    result = new OperationResult
+                    {
+                        Result = user
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error 
+                _logger.LogError("An error occurred. Details: {error}", ex.Message);
+
+                result = new OperationResult
+                {
+                    ErrorTitle = "SYSTEM ERROR",
+                    ErrorMessage = "Transaction could not be initiated",
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
+            }
+            return result;
+            }
             public async Task<OperationResult> GetUser(string id)
             {
                 // Initialize operation result

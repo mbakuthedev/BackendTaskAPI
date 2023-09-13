@@ -56,13 +56,13 @@ namespace BackendTaskAPI.Models
             return result;
         }
 
-        public  IEnumerable<TaskDataModel> GetTasks()
+        public async Task<IEnumerable<TaskDataModel>> GetTasks()
         {
             // Initialize operation result
             OperationResult result;
             try
             {
-                var tasks =   _context.Tasks.ToListAsync();
+                var tasks = await _context.Tasks.ToListAsync();
                 result = new OperationResult
                 {
                     Result = tasks
@@ -80,7 +80,7 @@ namespace BackendTaskAPI.Models
                     StatusCode = (int)HttpStatusCode.InternalServerError
                 };
             }
-            return result;
+            return (IEnumerable<TaskDataModel>)result;
         }
         public async Task<OperationResult> FetchTasksByPriority(Priority Taskpriority, TaskApiModel model)
         {
@@ -227,12 +227,21 @@ namespace BackendTaskAPI.Models
             OperationResult result;
             try
             {
-               var tasksByDate =  _context.Tasks.FirstOrDefault(x => x.DueDate.Date == dueDate.Date);
-
-                result = new OperationResult
+               var tasksByDate = await  _context.Tasks.FirstOrDefaultAsync(x => x.DueDate.Date == dueDate.Date);
+                if (tasksByDate == null)
                 {
-                    Result = tasksByDate
-                };
+                    result = new OperationResult
+                    {
+                        Result = new { Message = "Task not found" }
+                    };
+                }
+                else
+                {
+                    result = new OperationResult
+                    {
+                        Result = tasksByDate
+                    };
+                }          
             }
             catch (Exception ex)
             {

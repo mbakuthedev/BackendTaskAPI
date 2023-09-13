@@ -1,4 +1,5 @@
 ﻿using BackendTaskAPI.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BackendTaskAPI.DataModels
 {
@@ -10,6 +11,9 @@ namespace BackendTaskAPI.DataModels
         public Priority Priority { get; set; }
         public Status Status { get; set; }
         public NotificationDataModel Notification { get; set; }
+        public string ProjectId { get; set; }
+
+        [ForeignKey(nameof(ProjectId))]
         public ProjectDataModel Project { get; set; }
     }
 }

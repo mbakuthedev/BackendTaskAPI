@@ -9,7 +9,6 @@ namespace BackendTaskAPI.DataModels
 
         public string TaskId { get; set; }
 
-        [ForeignKey(nameof(TaskId))]
-        public TaskDataModel Tasks { get; set; }
+        public List<TaskDataModel> Tasks { get; set; }
     }
 }

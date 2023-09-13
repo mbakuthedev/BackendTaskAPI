@@ -16,31 +16,19 @@ namespace BackendTaskAPI.Models
             _context = context;
             _logger = logger;
         }
-
-        public async Task<OperationResult> CreateProject(string id,ProjectApiModel model)
+        // TODO : CHECK IT OUT
+        public async Task<OperationResult> CreateProject(ProjectApiModel model)
         {
             // Initialize Operation Result
             OperationResult result;
             try
             {
-               var tasks =  await _context.Tasks.FindAsync(id);
-                if (tasks == null)
-                {
-                    result = new OperationResult
-                    {
-                        ErrorMessage = "Task not found",
-                        StatusCode = (int)HttpStatusCode.NotFound
-                    };
-                }
-                else
-                {
-
-                    var Usertasks = await _context.AddAsync(new ProjectDataModel
-                    {
+                var Usertasks = await _context.AddAsync(new ProjectDataModel
+                 {
                         ProjectDescription = model.ProjectDescription,
                         ProjectName = model.ProjectName,
       
-                });
+                 });
 
                     _context.SaveChanges();
 
@@ -48,7 +36,7 @@ namespace BackendTaskAPI.Models
                     {
                         Result = Usertasks
                     };
-                }
+                
                
             }
             catch (Exception ex)
@@ -72,10 +60,10 @@ namespace BackendTaskAPI.Models
             OperationResult result;
             try
             {
-                var tasks = await _context.Tasks.ToListAsync();
+                var projects = await _context.Projects.ToListAsync();
                 result = new OperationResult
                 {
-                    Result = tasks
+                    Result = projects
                 };
             }
             catch (Exception ex)
@@ -109,40 +97,13 @@ namespace BackendTaskAPI.Models
                 }
                 else
                 {
-                    project.Tasks = ;
-                     _context.Projects.Update(project);
+                    //project.Tasks = ;
+                    // _context.Projects.Update(project);
                     result = new OperationResult
                     {
                         Result = project
                     };
                 }
-            }
-            catch (Exception ex)
-            {
-                // Log the error 
-                _logger.LogError("An error occurred. Details: {error}", ex.Message);
-
-                result = new OperationResult
-                {
-                    ErrorTitle = "SYSTEM ERROR",
-                    ErrorMessage = "Transaction could not be initiated",
-                    StatusCode = (int)HttpStatusCode.InternalServerError
-                };
-            }
-            return result;
-        }
-
-        public async Task<OperationResult> FetchTasksByStatus(Status TaskStatus, TaskApiModel model)
-        {
-            // Initialize Operation Result
-            OperationResult result;
-            try
-            {
-                var tasksBasedOnStatus = await _context.Tasks.Where(x => x.Status == TaskStatus).ToListAsync();
-                result = new OperationResult
-                {
-                    Result = tasksBasedOnStatus
-                };
             }
             catch (Exception ex)
             {
