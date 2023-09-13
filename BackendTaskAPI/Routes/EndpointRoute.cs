@@ -13,6 +13,8 @@
 
         public const string ModifyTask = "api/tasks/modify";
 
+        public const string AddTaskToProject = "api/project/add-task";
+
 
         public const string CreateProject = "api/project/create";
 

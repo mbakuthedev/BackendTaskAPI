@@ -54,13 +54,27 @@ namespace BackendTaskAPI.Controllers
             return Ok(tasks);
         }
 
+        [HttpPatch(EndpointRoute.AddTaskToProject)]
+        public async Task<ActionResult> AddTaskToProject(string taskId, string projectId)
+        {
+            var operation = await _operation.AddTaskToProject(taskId,projectId);
+            if (!operation.Successful)
+            {
+                return Problem(
+                    detail: operation.ErrorMessage,
+                    statusCode: operation.StatusCode
+                    );
+            }
+            return Created(string.Empty, operation);
+        }
+
         /// <summary>
         /// An endpoint to modify projects
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPut(EndpointRoute.ModifyTask)]
+        [HttpPatch(EndpointRoute.ModifyProject)]
         public async Task<ActionResult> ModifyProject(string id, ProjectApiModel model)
         {
             var tasks = await _operation.ModifyProject(id, model);
@@ -79,7 +93,7 @@ namespace BackendTaskAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete(EndpointRoute.DeleteTask)]
+        [HttpDelete(EndpointRoute.DeleteProject)]
         public async Task<ActionResult> DeleteProject(string id)
         {
             await _operation.DeleteProject(id);

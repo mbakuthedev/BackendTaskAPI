@@ -80,25 +80,29 @@ namespace BackendTaskAPI.Models
             }
             return result;
         }
-        public async Task<OperationResult> AddTaskToProject(string taskId, ProjectDataModel project)
+        public async Task<OperationResult> AddTaskToProject(string taskId, string projectId)
         {
             // Initialize Operation Result
             OperationResult result;
             try
             {
-                var tasks = await _context.Tasks.FirstOrDefaultAsync(c => c.Id == taskId);
-                if (tasks == null )
+                var task = await _context.Tasks.FirstOrDefaultAsync(c => c.Id == taskId);
+                var project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == projectId);
+
+                if (task == null || project == null)
                 {
                     result = new OperationResult
                     {
-                        ErrorMessage = "Task not found",
+                        ErrorMessage = "Not found",
                         StatusCode = (int)HttpStatusCode.NotFound
                     };
                 }
                 else
                 {
-                    //project.Tasks = ;
-                    // _context.Projects.Update(project);
+                    project.TaskId = taskId;
+
+                     _context.Projects.Update(project);
+
                     result = new OperationResult
                     {
                         Result = project

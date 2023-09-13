@@ -6,6 +6,6 @@ namespace BackendTaskAPI.ApiModels
     {
         public string ProjectName { get; set; }
         public string ProjectDescription { get; set; }
-        public IList<Task> Tasks { get; set; }
+        public string TaskId { get; set; }
     }
 }
