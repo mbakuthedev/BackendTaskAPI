@@ -5,6 +5,6 @@ namespace BackendTaskAPI.BackendTaskAPI.Application.Interfaces
 {
     public interface IUserService
     {
-        string Login(string userName, string password);
+        Task<OperationResult> Login(string userName, string password);
     }
 }

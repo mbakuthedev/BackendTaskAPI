@@ -87,6 +87,11 @@ namespace BackendTaskAPI.Extensions
             return services;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
         public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>()

@@ -1,11 +1,9 @@
 ﻿using BackendTaskAPI.ApiModels;
 using BackendTaskAPI.BackendTaskAPI.Application.Interfaces;
-using BackendTaskAPI.BackendTaskAPI.Domain.Models;
 using BackendTaskAPI.Data;
 using BackendTaskAPI.Domain.DataModels;
 using BackendTaskAPI.Extensions;
 using BackendTaskAPI.Result;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -184,16 +182,23 @@ namespace BackendTaskAPI.Models
             return result;
         }
 
-        public string Login(string userName, string password)
+        public async Task<OperationResult> Login(string userName, string password)
         {
-                var user = _context.Users.SingleOrDefault(x => x.UserName == userName && x.Password == password);
+            // Initialize operation result
+            OperationResult result;
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == userName && x.Password == password);
 
                 // return null if user not found
                 if (user == null)
                 {
-                    return string.Empty;
+                   return result = new OperationResult
+                    {
+                        ErrorMessage = "No user found",
+                        StatusCode = (int)HttpStatusCode.NotFound
+                    };
                 }
-
+                else
+                {
                 // authentication successful so generate jwt token
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(ApplicationExtension.SECRET);
@@ -202,8 +207,8 @@ namespace BackendTaskAPI.Models
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Role, user.Role)
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.Role, user.Role)
                     }),
 
                     Expires = DateTime.UtcNow.AddMinutes(5),
@@ -213,8 +218,14 @@ namespace BackendTaskAPI.Models
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 user.Token = tokenHandler.WriteToken(token);
 
-                return user.Token;
+                return result = new OperationResult
+                {
+                    Result = user.Token
+                };
             }
+               
+                 
+        }
     }
     }
 

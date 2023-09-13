@@ -26,28 +26,16 @@ namespace BackendTaskAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost(EndpointRoute.Login)]
-        public Task<ActionResult> Login([FromBody] UserApiModel user)
+        public async Task<ActionResult> Login([FromBody] UserApiModel user)
         {
-            var token = _operation.Login(user.UserName, user.Password);
+            var token = await _operation.Login(user.UserName, user.Password);
 
-            if (token == null || token == String.Empty)
+            if (!token.Successful)
             {
-                return Problem(detail:string.Empty);
+                return Problem(detail:token.ErrorMessage);
             }
-       
 
             return Ok(token);
-        }
-
-        /// <summary>
-        /// An endpoint to fetch all projects
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet(EndpointRoute.FetchUser)]
-        public async Task<ActionResult<IEnumerable<UserApiModel>>> GetUser(string id)
-        {
-            var user = await _operation.GetUser(id);
-            return Ok(user);
         }
 
         /// <summary>
