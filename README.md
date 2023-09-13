@@ -1,4 +1,4 @@
-# BackendTestApi
+# BackendTaskApi
 BackendTestApi is a .NET-based API designed to handle Tasks and Projects 
 Whether you're building an application to help people sort their tasks based on Priorities(High, Low, Medium) and Statuses (Completed, ) this API will help you also sort the Tasks into Projects. 
 This was built on the basis of Enhancing Productivity.
