@@ -1,9 +1,10 @@
-﻿using BackendTaskAPI.Models;
+﻿using BackendTaskAPI.Domain.DataModels;
+using BackendTaskAPI.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BackendTaskAPI.DataModels
 {
-    public class TaskDataModel : BaseDataModel
+    public class TaskDataModel : BaseModel
     {
         public string Title { get; set; }
         public string Description { get; set; }

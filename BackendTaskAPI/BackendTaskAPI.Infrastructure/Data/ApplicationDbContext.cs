@@ -1,4 +1,5 @@
 ﻿using BackendTaskAPI.DataModels;
+using BackendTaskAPI.Domain.DataModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendTaskAPI.Data

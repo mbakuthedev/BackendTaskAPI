@@ -2,7 +2,7 @@
 
 namespace BackendTaskAPI.ApiModels
 {
-    public class NotificationsApiModel : BaseApiModel
+    public class NotificationsApiModel : BaseModel
     {
         public DateTime DueDate { get; set; }
         public string NotificationMessage { get; set; }

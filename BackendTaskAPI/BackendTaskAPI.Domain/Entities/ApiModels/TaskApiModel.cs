@@ -3,7 +3,7 @@ using BackendTaskAPI.DataModels;
 
 namespace BackendTaskAPI.Models
 {
-    public class TaskApiModel : BaseApiModel
+    public class TaskApiModel : BaseModel
     {
         
         public string Title { get; set; }

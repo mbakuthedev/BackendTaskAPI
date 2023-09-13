@@ -1,19 +1,26 @@
 ﻿using BackendTaskAPI.ApiModels;
+using BackendTaskAPI.BackendTaskAPI.Application.Interfaces;
+using BackendTaskAPI.BackendTaskAPI.Domain.Models;
 using BackendTaskAPI.Data;
-using BackendTaskAPI.DataModels;
+using BackendTaskAPI.Domain.DataModels;
+using BackendTaskAPI.Extensions;
 using BackendTaskAPI.Result;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using System.Threading.Tasks;
+using System.Security.Claims;
+using System.Text;
 
 namespace BackendTaskAPI.Models
 {
-    public class UserOperations
+    public class UserService : IUserService
     {
     
             private readonly ApplicationDbContext _context;
-            private readonly ILogger<UserOperations> _logger;
-            public UserOperations(ApplicationDbContext context, ILogger<UserOperations> logger)
+            private readonly ILogger<UserService> _logger;
+            public UserService(ApplicationDbContext context, ILogger<UserService> logger)
             {
                 _context = context;
                 _logger = logger;
@@ -173,10 +180,41 @@ namespace BackendTaskAPI.Models
                         ErrorMessage = "Transaction could not be initiated",
                         StatusCode = (int)HttpStatusCode.InternalServerError
                     };
-                }
-                return result;
             }
-
+            return result;
         }
+
+        public string Login(string userName, string password)
+        {
+                var user = _context.Users.SingleOrDefault(x => x.UserName == userName && x.Password == password);
+
+                // return null if user not found
+                if (user == null)
+                {
+                    return string.Empty;
+                }
+
+                // authentication successful so generate jwt token
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(ApplicationExtension.SECRET);
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Role, user.Role)
+                    }),
+
+                    Expires = DateTime.UtcNow.AddMinutes(5),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                user.Token = tokenHandler.WriteToken(token);
+
+                return user.Token;
+            }
+    }
     }
 

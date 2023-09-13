@@ -1,19 +1,17 @@
-﻿using BackendTaskAPI.Data;
+﻿using BackendTaskAPI.BackendTaskAPI.Application.Interfaces;
+using BackendTaskAPI.Data;
 using BackendTaskAPI.DataModels;
 using BackendTaskAPI.Result;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
 using System.Net;
 
 namespace BackendTaskAPI.Models
 {
-    public class TaskOperation
+    public class TaskService : ITaskService
     {
         private readonly ApplicationDbContext   _context;
-        private readonly ILogger<TaskOperation> _logger;
-        public TaskOperation(ApplicationDbContext context, ILogger<TaskOperation> logger)
+        private readonly ILogger<TaskService> _logger;
+        public TaskService(ApplicationDbContext context, ILogger<TaskService> logger)
         {
             _context = context;
             _logger = logger;

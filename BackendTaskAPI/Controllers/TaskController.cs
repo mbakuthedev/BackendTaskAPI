@@ -1,8 +1,6 @@
 ﻿using BackendTaskAPI.EndpointRoutes;
 using BackendTaskAPI.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Numerics;
 
 namespace BackendTaskAPI.Controllers
 {
@@ -12,13 +10,13 @@ namespace BackendTaskAPI.Controllers
         /// <summary>
         /// Scoped instance of task operation
         /// </summary>
-        private readonly TaskOperation _operation;
+        private readonly TaskService _operation;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="operation"></param>
-        public TaskController(TaskOperation operation)
+        public TaskController(TaskService operation)
         {
             _operation = operation;
         }
@@ -126,4 +124,4 @@ namespace BackendTaskAPI.Controllers
         }
     }
 }
-}
+

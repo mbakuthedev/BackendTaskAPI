@@ -1,25 +1,24 @@
 ﻿using BackendTaskAPI.ApiModels;
 using BackendTaskAPI.EndpointRoutes;
 using BackendTaskAPI.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendTaskAPI.Controllers
 {
-    
+
     [ApiController]
     public class ProjectController : ControllerBase
     {
         /// <summary>
         /// Scoped instance of task operation
         /// </summary>
-        private readonly ProjectOperation _operation;
+        private readonly ProjectService _operation;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="operation"></param>
-        public ProjectController(ProjectOperation operation)
+        public ProjectController(ProjectService operation)
         {
             _operation = operation;
         }

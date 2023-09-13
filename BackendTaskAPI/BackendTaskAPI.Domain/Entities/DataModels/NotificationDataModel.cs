@@ -1,6 +1,8 @@
-﻿namespace BackendTaskAPI.DataModels
+﻿using BackendTaskAPI.Models;
+
+namespace BackendTaskAPI.Domain.DataModels
 {
-    public class NotificationDataModel : BaseDataModel
+    public class NotificationDataModel : BaseModel
     {
         public DateTime DueDate { get; set; }
         public string NotificationMessage { get; set; }

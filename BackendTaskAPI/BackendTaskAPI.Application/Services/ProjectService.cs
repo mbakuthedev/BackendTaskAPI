@@ -1,4 +1,5 @@
 ﻿using BackendTaskAPI.ApiModels;
+using BackendTaskAPI.BackendTaskAPI.Application.Interfaces;
 using BackendTaskAPI.Data;
 using BackendTaskAPI.DataModels;
 using BackendTaskAPI.Result;
@@ -7,11 +8,11 @@ using System.Net;
 
 namespace BackendTaskAPI.Models
 {
-    public class ProjectOperation
+    public class ProjectService : IProjectService
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<ProjectOperation> _logger;
-        public ProjectOperation(ApplicationDbContext context, ILogger<ProjectOperation> logger)
+        private readonly ILogger<ProjectService> _logger;
+        public ProjectService(ApplicationDbContext context, ILogger<ProjectService> logger)
         {
             _context = context;
             _logger = logger;

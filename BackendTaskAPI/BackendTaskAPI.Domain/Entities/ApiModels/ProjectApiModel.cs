@@ -2,7 +2,7 @@
 
 namespace BackendTaskAPI.ApiModels
 {
-    public class ProjectApiModel : BaseApiModel
+    public class ProjectApiModel : BaseModel
     {
         public string ProjectName { get; set; }
         public string ProjectDescription { get; set; }

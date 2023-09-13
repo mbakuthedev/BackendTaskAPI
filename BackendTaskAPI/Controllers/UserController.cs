@@ -1,7 +1,8 @@
 ﻿using BackendTaskAPI.ApiModels;
+using BackendTaskAPI.BackendTaskAPI.Application.Interfaces;
 using BackendTaskAPI.EndpointRoutes;
 using BackendTaskAPI.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendTaskAPI.Controllers
@@ -12,34 +13,30 @@ namespace BackendTaskAPI.Controllers
         /// <summary>
         /// Scoped instance of task operation
         /// </summary>
-        private readonly UserOperations _operation;
+        private readonly UserService _operation;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="operation"></param>
-        public UserController(UserOperations operation)
+        public UserController(UserService operation)
         {
             _operation = operation;
         }
 
-        /// <summary>
-        /// An endpoint to register a user
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost(EndpointRoute.RegisterUser)]
-        public async Task<ActionResult> RegisterUser(UserApiModel model)
+        [AllowAnonymous]
+        [HttpPost(EndpointRoute.Login)]
+        public Task<ActionResult> Login([FromBody] UserApiModel user)
         {
-            var operation = await _operation.RegisterUser(model);
-            if (!operation.Successful)
+            var token = _operation.Login(user.UserName, user.Password);
+
+            if (token == null || token == String.Empty)
             {
-                return Problem(
-                    detail: operation.ErrorMessage,
-                    statusCode: operation.StatusCode
-                     );
+                return Problem(detail:string.Empty);
             }
-            return Created(string.Empty, model);
+       
+
+            return Ok(token);
         }
 
         /// <summary>

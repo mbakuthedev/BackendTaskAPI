@@ -27,7 +27,7 @@
 
         public const string RegisterUser =  "api/user/create";
 
-        public const string FetchUser = "api/user/{id}";
+        public const string Login = "api/user/login";
 
         public const string ModifyUser = "api/user/modify";
         public const string DeleteUser = "api/user/delete";
